@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {colors} from '../themes/color';
 
 export interface CommentCardProps {
   item: number;
@@ -18,6 +19,6 @@ const styles = StyleSheet.create({
   commentItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: colors.gray,
   },
 });

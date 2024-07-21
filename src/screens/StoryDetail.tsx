@@ -11,6 +11,8 @@ import {
 import {Story} from '../types';
 import {fetchStoryItem} from '../services/api';
 import {CommentCard} from '../components/CommentCard';
+import {colors} from '../themes/color';
+import {fontStyles} from '../themes/styles';
 
 const StoryDetail: React.FC<{route: any}> = ({route}) => {
   const [story, setStory] = useState<Story | null>(null);
@@ -44,11 +46,20 @@ const StoryDetail: React.FC<{route: any}> = ({route}) => {
 
   return (
     <View style={styles.container}>
-      {renderStoryInfo(styles.storyTitle, story.title)}
-      {renderStoryInfo(styles.storyAuthor, `by ${story.by}`)}
+      {renderStoryInfo(
+        [styles.storyTitle, fontStyles.textLargeBold],
+        story.title,
+      )}
+      {renderStoryInfo(
+        [styles.storyAuthor, fontStyles.textMediumRegular],
+        `by ${story.by}`,
+      )}
       {renderStoryInfo(styles.storyScore, `Score: ${story.score}`)}
       {renderStoryInfo(styles.storyUrl, story.url)}
-      {renderStoryInfo(styles.commentsTitle, `Comments:`)}
+      {renderStoryInfo(
+        [styles.commentsTitle, fontStyles.textMediumBold],
+        `Comments:`,
+      )}
       <FlatList
         data={story.kids ? story.kids : []}
         renderItem={(item: {item: number}) => <CommentCard item={item.item} />}
@@ -68,28 +79,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   storyTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 10,
-    color: 'black',
+    color: colors.black,
   },
   storyAuthor: {
-    fontSize: 16,
     marginBottom: 10,
   },
   storyScore: {
     marginBottom: 10,
-    color: 'red',
+    color: colors.red,
   },
   storyUrl: {
     marginBottom: 20,
-    color: 'blue',
+    color: colors.blue,
   },
   commentsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
     marginBottom: 10,
-    color: 'black',
+    color: colors.black,
   },
 });
 
