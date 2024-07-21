@@ -8,10 +8,8 @@ const Home: React.FC<{navigation: any}> = ({navigation}) => {
   const [storyIds, setStoryIds] = useState<number[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [page, setPage] = useState<number>(1);
-  const storiesPerPage = 20; // Number of stories per page
+  const storiesPerPage = 20;
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log('route111111');
 
   useEffect(() => {
     setIsLoading(true);
@@ -40,7 +38,7 @@ const Home: React.FC<{navigation: any}> = ({navigation}) => {
     <View style={styles.container}>
       <FlatList
         data={stories}
-        renderItem={item => (
+        renderItem={(item: {item: Story}) => (
           <StoryCard
             story={item.item}
             onPress={() => navigation.navigate('Story', {itemId: item.item.id})}

@@ -1,17 +1,23 @@
 import * as React from 'react';
-import {Text, View, StyleProp, ViewStyle} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 export interface CommentCardProps {
   item: number;
-  style?: StyleProp<ViewStyle> | undefined;
 }
 
 export const CommentCard = (props: CommentCardProps) => {
-  const {item, style} = props;
+  const {item} = props;
 
   return (
-    <View style={style}>
+    <View style={styles.commentItem}>
       <Text>{item}</Text>
     </View>
   );
 };
+const styles = StyleSheet.create({
+  commentItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+});

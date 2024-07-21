@@ -51,9 +51,7 @@ const StoryDetail: React.FC<{route: any}> = ({route}) => {
       {renderStoryInfo(styles.commentsTitle, `Comments:`)}
       <FlatList
         data={story.kids ? story.kids : []}
-        renderItem={item => (
-          <CommentCard item={item.item} style={styles.commentItem} />
-        )}
+        renderItem={(item: {item: number}) => <CommentCard item={item.item} />}
         keyExtractor={(item: number) => String(item)}
       />
     </View>
@@ -92,11 +90,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     color: 'black',
-  },
-  commentItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
   },
 });
 
