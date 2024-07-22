@@ -2,5 +2,13 @@
   "compilerOptions": {"baseUrl": ".", "paths": {"*": ["types/*"]}},
   "compilerOptions": {"baseUrl": ".", "paths": {"*": ["types/*"]}},
   "compilerOptions": {"baseUrl": ".", "paths": {"*": ["types/*"]}},
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
   "extends": "@react-native/typescript-config/tsconfig.json"
 }

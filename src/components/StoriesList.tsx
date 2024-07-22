@@ -20,8 +20,6 @@ const StoriesList = (props: StoriesListProps) => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  console.log('storyType' + storyType);
-
   const getStoryIds = async () => {
     try {
       setLoading(true);

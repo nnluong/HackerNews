@@ -5,7 +5,7 @@ import {NewStories} from './NewStories';
 import {BestStories} from './BestStories';
 import {TopStories} from './TopStories';
 
-const Home: React.FC<{navigation: any}> = ({navigation}) => {
+const Home = () => {
   const layoutTab = useWindowDimensions();
   const [routes] = React.useState([
     {key: 'new', title: 'New'},
