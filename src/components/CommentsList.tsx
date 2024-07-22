@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ActivityIndicator} from 'react-native';
 import {Comment} from '../types';
 import {fetchComment} from '../services/api';
-import {CommentCard} from '../components/CommentCard';
+import {CommentCard} from './CommentCard';
+import {colors} from '../themes/color';
 
 export interface CommentsListProps {
   kids: number[];
@@ -29,7 +30,7 @@ const CommentsList = (props: CommentsListProps) => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="small" color="#0000ff" />;
+    return <ActivityIndicator size="small" color={colors.indicator} />;
   }
 
   return (

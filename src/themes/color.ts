@@ -9,4 +9,5 @@ export const colors = {
   tabBg: '#F6F6F6',
   commentBg: '#f9f9f9',
   border: '#ddd',
+  indicator: '#0000ff',
 };

@@ -1,23 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  StyleSheet,
-  StyleProp,
-  TextStyle,
-} from 'react-native';
-import {Story, Comment} from '../types';
-import {fetchStoryItem, fetchComment} from '../services/api';
-import {CommentCard} from '../components/CommentCard';
+import {View, Text, StyleSheet, StyleProp, TextStyle} from 'react-native';
+import {Story} from '../types';
+import {fetchStoryItem} from '../services/api';
 import {colors} from '../themes/color';
 import {fontStyles} from '../themes/styles';
-import CommentsList from './CommentsList';
+import CommentsList from '../components/CommentsList';
 
 const StoryDetail: React.FC<{route: any}> = ({route}) => {
   const [story, setStory] = useState<Story | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,21 +19,6 @@ const StoryDetail: React.FC<{route: any}> = ({route}) => {
       setLoading(true);
       const fetchedStory = await fetchStoryItem(route.params.itemId);
       setStory(fetchedStory);
-      if (fetchedStory) {
-        if (!fetchedStory.kids) {
-          setComments([]);
-          setLoading(false);
-          return;
-        }
-
-        const commentIds = fetchedStory.kids;
-        const commentsPromises = commentIds.map(async (commentId: number) => {
-          const fetchedComment = await fetchComment(commentId);
-          return fetchedComment;
-        });
-        const commentsData = (await Promise.all(commentsPromises)) as Comment[];
-        setComments(commentsData);
-      }
       setLoading(false);
     }
   };
