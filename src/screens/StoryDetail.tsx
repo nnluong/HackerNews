@@ -8,14 +8,17 @@ import {
   StyleProp,
   TextStyle,
 } from 'react-native';
-import {Story} from '../types';
-import {fetchStoryItem} from '../services/api';
+import {Story, Comment} from '../types';
+import {fetchStoryItem, fetchComment} from '../services/api';
 import {CommentCard} from '../components/CommentCard';
 import {colors} from '../themes/color';
 import {fontStyles} from '../themes/styles';
+import CommentsList from './CommentsList';
 
 const StoryDetail: React.FC<{route: any}> = ({route}) => {
   const [story, setStory] = useState<Story | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStory();
@@ -23,17 +26,30 @@ const StoryDetail: React.FC<{route: any}> = ({route}) => {
 
   const fetchStory = async () => {
     if (route.params) {
+      setLoading(true);
       const fetchedStory = await fetchStoryItem(route.params.itemId);
       setStory(fetchedStory);
+      if (fetchedStory) {
+        if (!fetchedStory.kids) {
+          setComments([]);
+          setLoading(false);
+          return;
+        }
+
+        const commentIds = fetchedStory.kids;
+        const commentsPromises = commentIds.map(async (commentId: number) => {
+          const fetchedComment = await fetchComment(commentId);
+          return fetchedComment;
+        });
+        const commentsData = (await Promise.all(commentsPromises)) as Comment[];
+        setComments(commentsData);
+      }
+      setLoading(false);
     }
   };
 
   if (!story) {
-    return (
-      <View style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    return <View />;
   }
 
   const renderStoryInfo = (
@@ -56,15 +72,15 @@ const StoryDetail: React.FC<{route: any}> = ({route}) => {
       )}
       {renderStoryInfo(styles.storyScore, `Score: ${story.score}`)}
       {renderStoryInfo(styles.storyUrl, story.url)}
-      {renderStoryInfo(
-        [styles.commentsTitle, fontStyles.textMediumBold],
-        `Comments:`,
+      {story.kids && (
+        <>
+          {renderStoryInfo(
+            [styles.commentsTitle, fontStyles.textMediumBold],
+            `Comments:`,
+          )}
+          {<CommentsList kids={story.kids} />}
+        </>
       )}
-      <FlatList
-        data={story.kids ? story.kids : []}
-        renderItem={(item: {item: number}) => <CommentCard item={item.item} />}
-        keyExtractor={(item: number) => String(item)}
-      />
     </View>
   );
 };

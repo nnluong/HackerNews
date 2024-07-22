@@ -6,4 +6,7 @@ export const colors = {
   gray: '#cccccc',
   red: '#ff0000',
   blue: '#0000ff',
+  tabBg: '#F6F6F6',
+  commentBg: '#f9f9f9',
+  border: '#ddd',
 };

@@ -1,63 +1,72 @@
 import React, {useEffect, useState} from 'react';
-import {View, FlatList, StyleSheet, ActivityIndicator} from 'react-native';
-import {Story} from '../types';
-import {fetchStoryIds, fetchStoryItem} from '../services/api';
-import {StoryCard} from '../components/StoryCard';
+import {StyleSheet, useWindowDimensions, Text, Dimensions} from 'react-native';
+import {TabView, TabBar} from 'react-native-tab-view';
+import {NewStories} from './NewStories';
+import {BestStories} from './BestStories';
+import {TopStories} from './TopStories';
+import {colors} from '../themes/color';
+import {fontStyles} from '../themes/styles';
 
 const Home: React.FC<{navigation: any}> = ({navigation}) => {
-  const [storyIds, setStoryIds] = useState<number[]>([]);
-  const [stories, setStories] = useState<Story[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const storiesPerPage = 20;
-  const [isLoading, setIsLoading] = useState(false);
+  const layoutTab = useWindowDimensions();
+  const [routes] = React.useState([
+    {key: 'new', title: 'New'},
+    {key: 'best', title: 'Best'},
+    {key: 'top', title: 'Top'},
+  ]);
+  const [tabIndex, setTabIndex] = React.useState(0);
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetchStories();
-  }, [page]);
-
-  const fetchStories = async () => {
-    const ids = await fetchStoryIds('top');
-    setStoryIds(ids);
-    const currentStories = await Promise.all(
-      ids
-        .slice((page - 1) * storiesPerPage, page * storiesPerPage)
-        .map(id => fetchStoryItem(id)),
-    );
-    setStories(
-      currentStories.filter((story): story is Story => story !== null),
-    );
-    setIsLoading(false);
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'new':
+        return <NewStories />;
+      case 'best':
+        return <BestStories />;
+      case 'top':
+        return <TopStories />;
+      default:
+        return null;
+    }
   };
 
-  const handleLoadMore = () => {
-    setPage(page + 1);
-  };
+  const renderTabBar = (props: any) => (
+    <TabBar
+      {...props}
+      indicatorStyle={styles.indicatorStyle}
+      style={{
+        backgroundColor: colors.tabBg,
+        margin: 0,
+        padding: 0,
+        height: 42,
+        elevation: 0, // for Android
+        shadowOffset: {
+          width: 0,
+          height: 0, // for iOS
+        },
+      }}
+      scrollEnabled
+      renderLabel={({route, focused}) => (
+        <Text
+          style={[
+            fontStyles.textMediumBold,
+            {color: focused ? colors.blue : colors.gray},
+          ]}>
+          {route.title}
+        </Text>
+      )}
+      tabStyle={styles.tabStyle}
+    />
+  );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={stories}
-        renderItem={(item: {item: Story}) => (
-          <StoryCard
-            story={item.item}
-            onPress={() => navigation.navigate('Story', {itemId: item.item.id})}
-          />
-        )}
-        keyExtractor={(item: Story) => String(item.id)}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={() =>
-          isLoading ? (
-            <ActivityIndicator
-              size="large"
-              color="#0000ff"
-              style={styles.loadingIndicator}
-            />
-          ) : null
-        }
-      />
-    </View>
+    <TabView
+      navigationState={{index: tabIndex, routes}}
+      renderTabBar={renderTabBar}
+      renderScene={renderScene}
+      onIndexChange={setTabIndex}
+      swipeEnabled={false}
+      initialLayout={{width: layoutTab.width}}
+    />
   );
 };
 
@@ -66,6 +75,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  tabStyle: {
+    width: 'auto',
+    marginHorizontal: 10,
+    paddingHorizontal: 5,
+  },
+  indicatorStyle: {
+    backgroundColor: colors.blue,
+    height: 3,
   },
 });
 
